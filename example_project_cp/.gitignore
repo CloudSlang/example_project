@@ -1,0 +1,6 @@
+target/*
+.idea/**
+*.iml
+*.log
+.repository/*
+release.properties

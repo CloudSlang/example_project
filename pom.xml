@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.cloudslang.content</groupId>
+    <artifactId>example_project</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>Example project (CloudSlang)</name>
+    <description>Example project description</description>
+
+    <properties>
+        <timestamp>${maven.build.timestamp}</timestamp>
+        <maven.build.timestamp.format>yyyy-MM-dd HH:mm</maven.build.timestamp.format>
+        <sdk.version>10.51.1</sdk.version>
+        <sdk.group>com.hp.oo.sdk</sdk.group>
+        <score.version>1.10.6</score.version>
+        <jdk.version>1.7</jdk.version>
+        <java8>C:\jenkins\tools\hudson.model.JDK\zulu1.8.0_45-win</java8>
+        <copy.dependencies>process-sources</copy.dependencies>
+        <!-- Maven properties -->
+        <maven.javadoc.skip>true</maven.javadoc.skip> <!-- Skip javadoc generating when releasing-->
+        <maven.source.skip>true</maven.source.skip><!-- Skip source jar generating when releasing-->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.5.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.2</version>
+                    <configuration>
+                        <source>${jdk.version}</source>
+                        <target>${jdk.version}</target>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+    <modules>
+        <module>example_project_sources</module>
+        <module>example_project_cp</module>
+    </modules>
+</project>

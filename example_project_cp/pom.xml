@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>io.cloudslang.content</groupId>
+        <artifactId>example_project</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>example_project_cp</artifactId>
+
+    <properties>
+        <!-- Property used @ RELEASE TIME-->
+        <transform.sl.phase>process-sources</transform.sl.phase>
+        <!-- Property used @ BUILD TIME IN JENKINS -->
+        <internal.sl.phase>process-classes</internal.sl.phase>
+        <remoteSign>true</remoteSign>
+        <localSign>true</localSign>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>example_project_sources</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <!--Copy everything from folder except the excluded-->
+            <resource>
+                <directory>${basedir}/src/main/resources/${project.parent.artifactId}_cp-project</directory>
+                <filtering>false</filtering>
+                <excludes>
+                    <exclude>contentpack.properties</exclude>
+                    <exclude>pom.xml</exclude>
+                    <exclude>**/**/.keep_structure</exclude>
+                </excludes>
+            </resource>
+            <!-- Copy the files included and filter the variables with the actual values available to maven-->
+            <resource>
+                <directory>${basedir}/src/main/resources/${project.parent.artifactId}_cp-project</directory>
+                <filtering>true</filtering>
+                <includes>
+                    <include>contentpack.properties</include>
+                    <include>pom.xml</include>
+                </includes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>2.10</version>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>process-sources</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <addParentPoms>true</addParentPoms>
+                            <copyPom>true</copyPom>
+                            <useRepositoryLayout>true</useRepositoryLayout>
+                            <excludeTransitive>false</excludeTransitive>
+                            <includeScope>compile</includeScope>
+                            <outputDirectory>${project.build.outputDirectory}/Lib</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <!--This is required for Web Designer description generation-->
+            <plugin>
+                <groupId>io.cloudslang.tools</groupId>
+                <artifactId>cs-content-packager-plugin</artifactId>
+                <version>1.0.2</version>
+                <executions>
+                    <execution>
+                        <id>extract metadata</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>extract-description</goal>
+                        </goals>
+                        <configuration>
+                            <contentFiles>${project.build.outputDirectory}/Content/Library</contentFiles>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jarsigner-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <id>verify</id>
+                        <goals>
+                            <goal>verify</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <verbose>true</verbose>
+                    <certs>true</certs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
